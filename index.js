@@ -11,7 +11,7 @@ app.use(cookieParser());
 
 app.use(express.json());
 app.use(express.urlencoded({
-  extended: true
+    extended: true
 }));
 
 const path = require('path');
@@ -25,23 +25,33 @@ app.engine('jsx', reactEngine);
 
 // model
 // contains database config
-const pool = require('./db');
+const db = require('./db');
 
-// require in routers
-const routes = require('./routes/routes.js');
+// ROUTES
+app.get('/', (req, res) => {
+    res.render('ajax-playground');
+})
 
-// use routers in order
-app.use('/', routes);
+app.get('/get', (request, response) => {
+
+    const data = {
+        1: "bacon",
+        2: "mango"
+    };
+
+    response.send(data);
+});
+
 
 // start server listen
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
-let shutdown = function(){
-  server.close(() => {
-    console.log('Process terminated');
-    pool.end( () => console.log('Shut down db connection pool'));
-  });
+let shutdown = function() {
+    server.close(() => {
+        console.log('Process terminated');
+        db.poolEnd();
+    });
 };
 
 process.on('SIGTERM', shutdown);

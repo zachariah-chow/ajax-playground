@@ -1,3 +1,5 @@
+##Courtesy of @dyana
+
 DB_NAME=test_db
 
 all: tables seed
